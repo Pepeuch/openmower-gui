@@ -6,22 +6,33 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=300 # Vérifie les mises à jour toutes les 5 min
+    pull_policy: always # Force le téléchargement de la dernière version
+
   gui:
     container_name: openmower-gui
+    depends_on:
+      - watchtower
     labels:
-      "com.centurylinklabs.watchtower.enable": true
-      project: openmower
-      app: gui
-    image: ghcr.io/cedbossneo/openmower-gui:master
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "project=openmower"
+      - "app=gui"
+    image: ghcr.io/Pepeuch/openmower-gui:fullscreenmap
     restart: unless-stopped
     network_mode: host
     privileged: true
     environment:
-      ROS_MASTER_URI: http://localhost:11311
-      MOWER_CONFIG_FILE: /config/mower_config.sh
-      DOCKER_HOST: unix:///var/run/docker.sock
+      - ROS_MASTER_URI=http://localhost:11311
+      - MOWER_CONFIG_FILE=/config/mower_config.sh
+      - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
       - /dev:/dev
       - ./db:/app/db
       - ./config/om:/config
       - /var/run/docker.sock:/var/run/docker.sock
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
