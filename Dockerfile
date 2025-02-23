@@ -5,12 +5,19 @@ WORKDIR /app
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o openmower-gui
 
-# === Étape 2: Compilation du front-end React ===
+# === Étape 2: Compilation du front-end React avec Bun ===
 FROM node:18 AS build-web
 
 WORKDIR /web
 COPY ./web .
-RUN yarn install --frozen-lockfile && yarn build
+
+# Installer Bun correctement
+RUN curl -fsSL https://bun.sh/install | bash && \
+    echo 'export PATH="/root/.bun/bin:$PATH"' >> /etc/environment
+
+
+# Installer les dépendances et builder avec Bun
+RUN /root/.bun/bin/bun install --frozen-lockfile && /root/.bun/bin/bun run build
 
 # === Étape 3: Installation des dépendances système ===
 FROM ubuntu:22.04 AS deps

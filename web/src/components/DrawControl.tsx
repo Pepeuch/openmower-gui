@@ -1,7 +1,7 @@
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import type {ControlPosition} from 'react-map-gl';
-import {useControl} from 'react-map-gl';
-import {useEffect} from "react";
+import type { ControlPosition, IControl, MapInstance } from 'react-map-gl';
+import { useControl } from 'react-map-gl';
+import { useEffect } from "react";
 import DirectSelectWithBoxMode from '../modes/DirectSelectWithBoxMode';
 
 type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
@@ -23,25 +23,24 @@ export default function DrawControl(props: DrawControlProps) {
                 ...MapboxDraw.modes,
                 direct_select: DirectSelectWithBoxMode
             }
-        }),
+        }) as unknown as IControl<MapInstance>, // 🔥 Correction ici 🔥
         ({ map }) => {
             map.on('draw.create', props.onCreate);
             map.on('draw.update', props.onUpdate);
             map.on('draw.combine', props.onCombine);
             map.on('draw.delete', props.onDelete);
-
         },
-        ({map}) => {
+        ({ map }) => {
             map.off('draw.create', props.onCreate);
             map.off('draw.update', props.onUpdate);
             map.off('draw.combine', props.onCombine);
             map.off('draw.delete', props.onDelete);
-        }
-        ,
+        },
         {
             position: props.position,
         }
     );
+
     useEffect(() => {
         if (mp) {
             if (props.features) {
@@ -52,6 +51,7 @@ export default function DrawControl(props: DrawControlProps) {
             }
         }
     }, [mp, props.features]);
+
     useEffect(() => {
         if (mp) {
             if (!props.editMode) {
@@ -61,16 +61,13 @@ export default function DrawControl(props: DrawControlProps) {
             }
         }
     }, [mp, props.editMode]);
+
     return null;
 }
 
 DrawControl.defaultProps = {
-    onCreate: () => {
-    },
-    onUpdate: () => {
-    },
-    onDelete: () => {
-    },
-    onCombine: () => {
-    },
+    onCreate: () => {},
+    onUpdate: () => {},
+    onDelete: () => {},
+    onCombine: () => {},
 };
