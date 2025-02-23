@@ -18,7 +18,7 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
       - "project=openmower"
       - "app=gui"
-    image: ghcr.io/Pepeuch/openmower-gui:fullscreenmap
+    image: ghcr.io/pepeuch/openmower-gui:fullscreenmap
     restart: unless-stopped
     network_mode: host
     privileged: true
