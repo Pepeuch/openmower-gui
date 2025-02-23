@@ -29,6 +29,17 @@ var offsetXTimeout: any = null;
 var offsetYTimeout: any = null;
 
 export const MapPage = () => {
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    
+        useEffect(() => {
+            if (window.location.hash.includes("#fullscreen")) {
+                setIsFullscreen(true);
+            }
+        }, []);
+    
+        if (isFullscreen) {
+            return <MapPageFullscreen />;
+        }
     const {notification} = App.useApp();
     const mowerAction = useMowerAction()
     const highLevelStatus = useHighLevelStatus()

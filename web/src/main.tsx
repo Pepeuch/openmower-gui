@@ -12,6 +12,7 @@ import SetupPage from "./pages/SetupPage.tsx";
 import {App, Row} from "antd";
 import {MowerStatus} from "./components/MowerStatus.tsx";
 import {Spinner} from "./components/Spinner.tsx";
+import MapPageFullscreen from "./pages/MapPageFullscreen.tsx";
 
 const router = createHashRouter([
     {
@@ -31,9 +32,10 @@ const router = createHashRouter([
                 path: "/openmower",
             },
             {
-                element: <MapPage/>,
                 path: "/map",
+                element: window.location.hash.includes("#fullscreen") ? <MapPageFullscreen /> : <MapPage />,
             },
+            
             {
                 element: <SetupPage/>,
                 path: "/setup",
