@@ -24,6 +24,7 @@ import {useConfig} from "../hooks/useConfig.tsx";
 import {useEnv} from "../hooks/useEnv.tsx";
 import {Spinner} from "../components/Spinner.tsx";
 import AsyncDropDownButton from "../components/AsyncDropDownButton.tsx";
+import MapPageFullscreen from "./MapPageFullscreen.tsx";
 
 var offsetXTimeout: any = null;
 var offsetYTimeout: any = null;
