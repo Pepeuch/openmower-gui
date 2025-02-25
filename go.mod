@@ -1,4 +1,4 @@
-module github.com/cedbossneo/openmower-gui
+module github.com/pepeuch/openmower-gui
 
 go 1.21
 

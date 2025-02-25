@@ -2,11 +2,12 @@ package api
 
 import (
 	"fmt"
-	"github.com/cedbossneo/openmower-gui/pkg/types"
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"os"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"github.com/pepeuch/openmower-gui/pkg/types"
 )
 
 func SettingsRoutes(r *gin.RouterGroup, dbProvider types.IDBProvider) {

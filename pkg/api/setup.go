@@ -2,9 +2,10 @@ package api
 
 import (
 	"bufio"
-	"github.com/cedbossneo/openmower-gui/pkg/types"
-	"github.com/gin-gonic/gin"
 	"io"
+
+	"github.com/gin-gonic/gin"
+	"github.com/pepeuch/openmower-gui/pkg/types"
 )
 
 func SetupRoutes(r *gin.RouterGroup, provider types.IFirmwareProvider, ubloxProvider types.IGpsProvider) {

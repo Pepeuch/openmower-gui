@@ -5,14 +5,15 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	types2 "github.com/cedbossneo/openmower-gui/pkg/types"
-	"github.com/docker/docker/api/types"
-	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
-	"github.com/samber/lo"
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/docker/docker/api/types"
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
+	types2 "github.com/pepeuch/openmower-gui/pkg/types"
+	"github.com/samber/lo"
 )
 
 func ContainersRoutes(r *gin.RouterGroup, provider types2.IDockerProvider) {

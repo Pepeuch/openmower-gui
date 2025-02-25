@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/cedbossneo/openmower-gui/pkg/api"
-	"github.com/cedbossneo/openmower-gui/pkg/providers"
 	"github.com/joho/godotenv"
+	"github.com/pepeuch/openmower-gui/pkg/api"
+	"github.com/pepeuch/openmower-gui/pkg/providers"
 )
 
 func main() {

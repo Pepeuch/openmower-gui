@@ -1,73 +1,52 @@
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import type { ControlPosition, IControl, MapInstance } from 'react-map-gl';
-import { useControl } from 'react-map-gl';
-import { useEffect } from "react";
-import DirectSelectWithBoxMode from '../modes/DirectSelectWithBoxMode';
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import { useEffect, useState } from "react";
+import type { Map } from "mapbox-gl"; // ✅ Utilisation correcte
+import DirectSelectWithBoxMode from "../modes/DirectSelectWithBoxMode";
 
 type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
-    position?: ControlPosition;
+    mapInstance: Map | null; // ✅ Passe l'instance correcte
     features?: any[];
     editMode?: boolean;
-
     onCreate: (evt: any) => void;
     onUpdate: (evt: any) => void;
     onCombine: (evt: any) => void;
     onDelete: (evt: any) => void;
 };
 
-export default function DrawControl(props: DrawControlProps) {
-    const mp = useControl<MapboxDraw>(
-        () => new MapboxDraw({
+export default function DrawControl({ mapInstance, ...props }: DrawControlProps) {
+    const [draw, setDraw] = useState<MapboxDraw | null>(null);
+
+    useEffect(() => {
+        if (!mapInstance) return;
+
+        const drawInstance = new MapboxDraw({
             ...props,
             modes: {
                 ...MapboxDraw.modes,
-                direct_select: DirectSelectWithBoxMode
-            }
-        }) as unknown as IControl<MapInstance>, // 🔥 Correction ici 🔥
-        ({ map }) => {
-            map.on('draw.create', props.onCreate);
-            map.on('draw.update', props.onUpdate);
-            map.on('draw.combine', props.onCombine);
-            map.on('draw.delete', props.onDelete);
-        },
-        ({ map }) => {
-            map.off('draw.create', props.onCreate);
-            map.off('draw.update', props.onUpdate);
-            map.off('draw.combine', props.onCombine);
-            map.off('draw.delete', props.onDelete);
-        },
-        {
-            position: props.position,
-        }
-    );
+                direct_select: DirectSelectWithBoxMode,
+            },
+        });
+
+        setDraw(drawInstance);
+        mapInstance.addControl(drawInstance, "top-left");
+
+        mapInstance.on("draw.create", props.onCreate);
+        mapInstance.on("draw.update", props.onUpdate);
+        mapInstance.on("draw.combine", props.onCombine);
+        mapInstance.on("draw.delete", props.onDelete);
+
+        return () => {
+            if (!mapInstance) return;
+            mapInstance.off("draw.create", props.onCreate);
+            mapInstance.off("draw.update", props.onUpdate);
+            mapInstance.off("draw.combine", props.onCombine);
+            mapInstance.off("draw.delete", props.onDelete);
+            mapInstance.removeControl(drawInstance);
+        };
+    }, [mapInstance]);
 
     useEffect(() => {
-        if (mp) {
-            if (props.features) {
-                mp.deleteAll();
-                props.features.forEach((f) => {
-                    mp.add(f);
-                })
-            }
-        }
-    }, [mp, props.features]);
-
-    useEffect(() => {
-        if (mp) {
-            if (!props.editMode) {
-                mp.changeMode('simple_select');
-            } else {
-                mp.changeMode('draw_polygon');
-            }
-        }
-    }, [mp, props.editMode]);
-
-    return null;
+        if (!draw) return;
+        draw.changeMode(props.editMode ? "draw_polygon" as keyof typeof MapboxDraw.modes : "simple_select" as keyof typeof MapboxDraw.modes);
+    }, [draw, props.editMode]);
 }
-
-DrawControl.defaultProps = {
-    onCreate: () => {},
-    onUpdate: () => {},
-    onDelete: () => {},
-    onCombine: () => {},
-};
