@@ -12,7 +12,7 @@ import SetupPage from "./pages/SetupPage.tsx";
 import {App, Row} from "antd";
 import {MowerStatus} from "./components/MowerStatus.tsx";
 import {Spinner} from "./components/Spinner.tsx";
-import MapPageFullscreen from "./pages/MapPageFullscreen.tsx";
+import MapPageFullscreen from "./pages/MapPageFullScreen.tsx";
 
 const router = createHashRouter([
     {

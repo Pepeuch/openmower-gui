@@ -43,10 +43,10 @@ export default function DrawControl({ mapInstance, ...props }: DrawControlProps)
             mapInstance.off("draw.delete", props.onDelete);
             mapInstance.removeControl(drawInstance);
         };
-    }, [mapInstance]);
+    }, [mapInstance, props.editMode]);
 
     useEffect(() => {
         if (!draw) return;
-        draw.changeMode(props.editMode ? "draw_polygon" as keyof typeof MapboxDraw.modes : "simple_select" as keyof typeof MapboxDraw.modes);
+        draw.changeMode(props.editMode ? "draw_polygon" : "simple_select" as any);
     }, [draw, props.editMode]);
 }

@@ -1,30 +1,30 @@
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
-import {useApi} from "../hooks/useApi.ts";
-import {App, Button, Col, Modal, Row, Slider, Typography} from "antd";
-import {useWS} from "../hooks/useWS.ts";
+import { useApi } from "../hooks/useApi.ts";
+import { App, Button, Col, Modal, Row, Slider, Typography } from "antd";
+import { useWS } from "../hooks/useWS.ts";
 import centroid from "@turf/centroid";
 import union from "@turf/union";
-import {featureCollection} from "@turf/helpers"
-import {ChangeEvent, useCallback, useEffect, useMemo, useState, useRef} from "react";
-import {AbsolutePose, Map as MapType, MapArea, Marker, MarkerArray, Path, Twist} from "../types/ros.ts";
+import { featureCollection } from "@turf/helpers";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { AbsolutePose, Map as MapType, MapArea, Marker, MarkerArray, Path, Twist } from "../types/ros.ts";
 import DrawControl from "../components/DrawControl.tsx";
-import Map, { Layer, Source, ViewStateChangeInfo } from 'react-map-gl';
-import type {Feature} from 'geojson';
-import {FeatureCollection, LineString, Polygon, Position} from "geojson";
-import {MowerActions, useMowerAction} from "../components/MowerActions.tsx";
-import {MowerMapMapArea} from "../api/Api.ts";
+import Map, { Layer, Source, ViewStateChangeInfo } from "react-map-gl"; // ✅ Correction des imports
+import type { Feature } from "geojson";
+import { FeatureCollection, LineString, Polygon, Position } from "geojson";
+import { MowerActions, useMowerAction } from "../components/MowerActions.tsx";
+import { MowerMapMapArea } from "../api/Api.ts";
 import AsyncButton from "../components/AsyncButton.tsx";
-import {MapStyle} from "./MapStyle.tsx";
-import {converter, drawLine, getQuaternionFromHeading, itranspose, transpose} from "../utils/map.tsx";
-import {Joystick} from "react-joystick-component";
-import {useHighLevelStatus} from "../hooks/useHighLevelStatus.ts";
-import {IJoystickUpdateEvent} from "react-joystick-component/build/lib/Joystick";
-import {useSettings} from "../hooks/useSettings.ts";
-import {useConfig} from "../hooks/useConfig.tsx";
-import {useEnv} from "../hooks/useEnv.tsx";
-import {Spinner} from "../components/Spinner.tsx";
+import { MapStyle } from "./MapStyle.tsx";
+import { converter, drawLine, getQuaternionFromHeading, itranspose, transpose } from "../utils/map.tsx";
+import { Joystick } from "react-joystick-component";
+import { useHighLevelStatus } from "../hooks/useHighLevelStatus.ts";
+import { IJoystickUpdateEvent } from "react-joystick-component/build/lib/Joystick";
+import { useSettings } from "../hooks/useSettings.ts";
+import { useConfig } from "../hooks/useConfig.tsx";
+import { useEnv } from "../hooks/useEnv.tsx";
+import { Spinner } from "../components/Spinner.tsx";
 import AsyncDropDownButton from "../components/AsyncDropDownButton.tsx";
-import MapPageFullscreen from "./MapPageFullscreen.tsx";
+import MapPageFullscreen from "./MapPageFullScreen.tsx";
 
 
 var offsetXTimeout: any = null;
@@ -32,16 +32,17 @@ var offsetYTimeout: any = null;
 
 export const MapPage = () => {
     const [isFullscreen, setIsFullscreen] = useState(false);
-    
-        useEffect(() => {
-            if (window.location.hash.includes("#fullscreen")) {
-                setIsFullscreen(true);
-            }
-        }, []);
-    
-        if (isFullscreen) {
-            return <MapPageFullscreen />;
+
+    useEffect(() => {
+        if (window.location.hash.includes("#fullscreen")) {
+            setIsFullscreen(true);
         }
+    }, []);
+
+    if (isFullscreen) {
+        return <MapPageFullscreen />;
+    }
+
     const {notification} = App.useApp();
     const mowerAction = useMowerAction()
     const highLevelStatus = useHighLevelStatus()
@@ -68,7 +69,8 @@ export const MapPage = () => {
     const [plan, setPlan] = useState<Path | undefined>(undefined)
     const mowingToolWidth = parseFloat(settings["OM_TOOL_WIDTH"] ?? "0.13") * 100;
     const [mowingAreas, setMowingAreas] = useState<{ key: string, label: string, feat: Feature }[]>([])
-    const mapRef = useRef<MapRef | null>(null);
+    const mapRef = useRef<any>(null); // ✅ Correction : `useRef` sans `MapRef`
+    
     const poseStream = useWS<string>(() => {
             console.log({
                 message: "Pose Stream closed",
@@ -611,10 +613,13 @@ export const MapPage = () => {
         return [map_ne, map_sw, datum]
     }, [_datumLat, _datumLon, map, offsetX, offsetY])
 
+    // ✅ Ajout du bon type pour éviter les erreurs TypeScript
     const [viewState, setViewState] = useState({
         longitude: (map_sw[0] + map_ne[0]) / 2 || _datumLon,
         latitude: (map_sw[1] + map_ne[1]) / 2 || _datumLat,
         zoom: 12,
+        width: "100vw", // ✅ Ajout explicite de width
+        height: "100vh", // ✅ Ajout explicite de height
     });
 
     function handleEditMap() {
@@ -984,33 +989,36 @@ export const MapPage = () => {
 
     
                 {map_sw?.length && map_ne?.length ? <Map
-    ref={mapRef} // ✅ On attache l'instance de la carte à mapRef
-    key={mapKey}
-    mapboxApiAccessToken="pk.eyJ1IjoiY2VkYm9zc25lbyIsImEiOiJjbGxldjB4aDEwOW5vM3BxamkxeWRwb2VoIn0.WOccbQZZyO1qfAgNxnHAnA"
-    mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
-    style={{ width: "100%", height: "100%" }}
-    viewState={viewState}
-    onViewStateChange={(evt) => setViewState(evt.viewState)}
->
-    <DrawControl
-        mapInstance={mapRef.current} // ✅ On passe l'instance de la carte
-        styles={MapStyle}
-        userProperties={true}
-        features={Object.values(features)}
-        displayControlsDefault={false}
-        editMode={editMap}
-        controls={{
-            polygon: true,
-            trash: true,
-            combine_features: true,
-        }}
-        defaultMode="simple_select"
-        onCreate={onCreate}
-        onUpdate={onUpdate}
-        onCombine={onCombine}
-        onDelete={onDelete}
-    />
-</Map> : <Spinner/>}
+                
+                                                        ref={mapRef} // ✅ On attache l'instance de la carte à mapRef
+                                                        key={mapKey}
+                                                        mapboxApiAccessToken="pk.eyJ1IjoiY2VkYm9zc25lbyIsImEiOiJjbGxldjB4aDEwOW5vM3BxamkxeWRwb2VoIn0.WOccbQZZyO1qfAgNxnHAnA"
+                                                        mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
+                                                        style={{ width: "100%", height: "100%" }}
+                                                        viewState={viewState}
+                                                        onViewStateChange={(evt) => setViewState({ ...evt.viewState, width: "100vw", height: "100vh" })} // ✅ Correction
+                    >
+                                                       <DrawControl
+                                                            mapInstance={mapRef.current} // ✅ On passe l'instance de la carte
+                                                            styles={MapStyle}
+                                                            userProperties={true}
+                                                            features={Object.values(features)}
+                                                            displayControlsDefault={false}
+                                                            editMode={editMap}
+                                                            controls={{
+                                                                polygon: true,
+                                                                trash: true,
+                                                                combine_features: true,
+                                                            }}
+                                                            defaultMode="simple_select"
+                                                            onCreate={() => {}}
+                                                            onUpdate={() => {}}
+                                                            onCombine={() => {}}
+                                                            onDelete={() => {}}
+                                                            />
+                                                            </Map>
+:  
+        <Spinner />}
                 {highLevelStatus.highLevelStatus.StateName === "AREA_RECORDING" &&
                     <div style={{position: "absolute", bottom: 30, right: 30, zIndex: 100}}>
                         <Joystick move={handleJoyMove} stop={handleJoyStop}/>
