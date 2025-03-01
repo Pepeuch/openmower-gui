@@ -116,6 +116,7 @@ export OM_ANTENNA_OFFSET_Y=0.0
 # Set distance between wheels in m
 export OM_WHEEL_DISTANCE_M=0.325
 
+
 # Set default ticks/m
 export OM_WHEEL_TICKS_PER_M=300.0
 
@@ -123,12 +124,13 @@ export OM_WHEEL_TICKS_PER_M=300.0
 export OM_HEATMAP_SENSOR_IDS=om_gps_accuracy
  */
 import {createSchemaField} from "@formily/react";
-import {Form as FormilyForm, FormButtonGroup, FormItem, FormLayout, Input, NumberPicker, Select, Switch} from "@formily/antd-v5";
+import {Form as FormilyForm, FormButtonGroup, FormItem, FormLayout, Input, NumberPicker, Select} from "@formily/antd-v5";
 import {useApi} from "../hooks/useApi.ts";
 import {App, Card, Col, Row} from "antd";
 import React, {CSSProperties, useEffect, useMemo} from "react";
 import type {Form as FormType} from "@formily/core";
 import {createForm, onFieldValueChange} from "@formily/core";
+import { Switch } from "antd";
 
 import {SettingsConfig, SettingsDesc, SettingValueType, useSettings} from "../hooks/useSettings.ts";
 
