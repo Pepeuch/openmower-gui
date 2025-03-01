@@ -1,15 +1,16 @@
 package api
 
 import (
-	"github.com/cedbossneo/openmower-gui/docs"
-	"github.com/cedbossneo/openmower-gui/pkg/providers"
-	"github.com/cedbossneo/openmower-gui/pkg/types"
+	"log"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	"github.com/pepeuch/openmower-gui/docs"
+	"github.com/pepeuch/openmower-gui/pkg/providers"
+	"github.com/pepeuch/openmower-gui/pkg/types"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"log"
 )
 
 // gin-swagger middleware

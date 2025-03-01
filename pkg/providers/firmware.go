@@ -3,14 +3,15 @@ package providers
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/cedbossneo/openmower-gui/pkg/types"
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing"
-	"golang.org/x/sys/execabs"
-	"golang.org/x/xerrors"
 	"io"
 	"os"
 	"text/template"
+
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/pepeuch/openmower-gui/pkg/types"
+	"golang.org/x/sys/execabs"
+	"golang.org/x/xerrors"
 )
 
 type FirmwareProvider struct {

@@ -1,11 +1,12 @@
 package api
 
 import (
-	"github.com/cedbossneo/openmower-gui/pkg/types"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+
+	"github.com/gin-gonic/gin"
+	"github.com/pepeuch/openmower-gui/pkg/types"
 )
 
 func proxy(dbProvider types.IDBProvider) func(c *gin.Context) {

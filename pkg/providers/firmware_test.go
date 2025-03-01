@@ -1,10 +1,11 @@
 package providers
 
 import (
-	"github.com/cedbossneo/openmower-gui/pkg/types"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/pepeuch/openmower-gui/pkg/types"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBuildBoard(t *testing.T) {

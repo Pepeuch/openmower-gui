@@ -4,17 +4,18 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"github.com/bluenviron/goroslib/v2/pkg/msgs/geometry_msgs"
-	"github.com/cedbossneo/openmower-gui/pkg/msgs/dynamic_reconfigure"
-	"github.com/cedbossneo/openmower-gui/pkg/msgs/mower_map"
-	"github.com/cedbossneo/openmower-gui/pkg/msgs/mower_msgs"
-	"github.com/cedbossneo/openmower-gui/pkg/types"
-	"github.com/docker/distribution/uuid"
-	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/bluenviron/goroslib/v2/pkg/msgs/geometry_msgs"
+	"github.com/docker/distribution/uuid"
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
+	"github.com/pepeuch/openmower-gui/pkg/msgs/dynamic_reconfigure"
+	"github.com/pepeuch/openmower-gui/pkg/msgs/mower_map"
+	"github.com/pepeuch/openmower-gui/pkg/msgs/mower_msgs"
+	"github.com/pepeuch/openmower-gui/pkg/types"
 )
 
 var upgrader = websocket.Upgrader{

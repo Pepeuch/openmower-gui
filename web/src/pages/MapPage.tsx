@@ -8,7 +8,8 @@ import {featureCollection} from "@turf/helpers"
 import {ChangeEvent, useCallback, useEffect, useMemo, useState} from "react";
 import {AbsolutePose, Map as MapType, MapArea, Marker, MarkerArray, Path, Twist} from "../types/ros.ts";
 import DrawControl from "../components/DrawControl.tsx";
-import Map, {Layer, Source} from 'react-map-gl';
+import Map from "@vis.gl/react-mapbox";
+import { Source, Layer } from "@vis.gl/react-mapbox";
 import type {Feature} from 'geojson';
 import {FeatureCollection, LineString, Polygon, Position} from "geojson";
 import {MowerActions, useMowerAction} from "../components/MowerActions.tsx";
@@ -45,7 +46,7 @@ export const MapPage = () => {
     const {config, setConfig} = useConfig(["gui.map.offset.x", "gui.map.offset.y"])
     const envs = useEnv()
     const guiApi = useApi()
-    const [manualMode, setManualMode] = useState<number | undefined>()
+    const [manualMode, setManualMode] = useState<NodeJS.Timeout | undefined>()
     const [tileUri, setTileUri] = useState<string | undefined>()
     const [editMap, setEditMap] = useState<boolean>(false)
     const [features, setFeatures] = useState<Record<string, Feature>>({});
@@ -794,11 +795,12 @@ export const MapPage = () => {
                 Command: 3,
             }
         )()
-        setManualMode(setInterval(() => {
-            (async () => {
-                await mowerAction("mow_enabled", {MowEnabled: 1, MowDirection: 0})()
-            })()
-        }, 10000))
+        
+        const interval = setInterval(async () => {
+            await mowerAction("mow_enabled", {MowEnabled: 1, MowDirection: 0})();
+        }, 10000);
+        
+        setManualMode(interval as unknown as NodeJS.Timeout);
     };
 
     const handleStopManualMode = async () => {
@@ -808,9 +810,13 @@ export const MapPage = () => {
                 Command: 2,
             }
         )()
-        clearInterval(manualMode)
-        setManualMode(undefined)
-        await mowerAction("mow_enabled", {MowEnabled: 0, MowDirection: 0})()
+        
+        if (manualMode) {
+            clearInterval(manualMode);
+            setManualMode(undefined);
+        }
+    
+        await mowerAction("mow_enabled", {MowEnabled: 0, MowDirection: 0})();
     };
 
     const handleJoyMove = (event: IJoystickUpdateEvent) => {
@@ -961,49 +967,61 @@ export const MapPage = () => {
                 </Row>
             </Col>
             <Col span={24} style={{height: '70%'}}>
-                {map_sw?.length && map_ne?.length ? <Map key={mapKey}
-                                                         reuseMaps
-                                                         antialias
-                                                         projection={{
-                                                             name: "globe"
-                                                         }}
-                                                         mapboxAccessToken="pk.eyJ1IjoiY2VkYm9zc25lbyIsImEiOiJjbGxldjB4aDEwOW5vM3BxamkxeWRwb2VoIn0.WOccbQZZyO1qfAgNxnHAnA"
-                                                         initialViewState={{
-                                                             bounds: [{lng: map_sw[0], lat: map_sw[1]}, {lng: map_ne[0], lat: map_ne[1]}],
-                                                         }}
-                                                         style={{width: '100%', height: '100%'}}
-                                                         mapStyle={"mapbox://styles/mapbox/satellite-streets-v12"}
-                >
-                    {tileUri ? <Source type={"raster"} id={"custom-raster"} tiles={[tileUri]} tileSize={256}/> : null}
-                    {tileUri ? <Layer type={"raster"} source={"custom-raster"} id={"custom-layer"}/> : null}
-                    <Source type={"geojson"} id={"labels"} data={labelsCollection}/>
-                    <Layer type={"symbol"} id={"mower"} source={"labels"} layout={{
-                        "text-field": ['get', 'title'], //This will get "t" property from your geojson
-                        "text-rotation-alignment": "auto",
-                        "text-allow-overlap": true,
-                        "text-anchor": "top"
-                    }} paint={{
-                        "text-color": "black",
-                    }}/>
-                    <DrawControl
-                        styles={MapStyle}
-                        userProperties={true}
-                        features={Object.values(features)}
-                        position="top-left"
-                        displayControlsDefault={false}
-                        editMode={editMap}
-                        controls={{
-                            polygon: true,
-                            trash: true,
-                            combine_features: true,
-                        }}
-                        defaultMode="simple_select"
-                        onCreate={onCreate}
-                        onUpdate={onUpdate}
-                        onCombine={onCombine}
-                        onDelete={onDelete}
-                    />
-                </Map> : <Spinner/>}
+                {map_sw?.length && map_ne?.length ? <Map 
+    key={mapKey}
+    reuseMaps
+    mapboxAccessToken="pk.eyJ1IjoiY2VkYm9zc25lbyIsImEiOiJjbGxldjB4aDEwOW5vM3BxamkxeWRwb2VoIn0.WOccbQZZyO1qfAgNxnHAnA"
+    initialViewState={{
+        longitude: (map_sw[0] + map_ne[0]) / 2,
+        latitude: (map_sw[1] + map_ne[1]) / 2,
+        zoom: 15,
+    }}
+    style={{ width: '100%', height: '100%' }}
+    mapStyle={"mapbox://styles/mapbox/satellite-streets-v12"}
+>
+    {tileUri ? (
+        <Source type={"raster"} id={"custom-raster"} tiles={[tileUri]} tileSize={256} />
+    ) : null}
+    
+    {tileUri ? (
+        <Layer type={"raster"} source={"custom-raster"} id={"custom-layer"} paint={{}} /> // ✅ Ajout `paint={{}}`
+    ) : null}
+
+    <Source type={"geojson"} id={"labels"} data={labelsCollection} />
+    
+    <Layer 
+        type={"symbol"} 
+        id={"mower"} 
+        source={"labels"} 
+        layout={{
+            "text-field": ['get', 'title'],
+            "text-rotation-alignment": "auto",
+            "text-allow-overlap": true,
+            "text-anchor": "top"
+        }} 
+        paint={{
+            "text-color": "black",
+        }} 
+    />
+    
+    <DrawControl
+        styles={MapStyle}
+        features={Object.values(features)}
+        displayControlsDefault={false}
+        editMode={editMap}
+        controls={{
+            polygon: true,
+            trash: true,
+            combine_features: true,
+        }}
+        defaultMode="simple_select"
+        onCreate={onCreate}
+        onUpdate={onUpdate}
+        onCombine={onCombine}
+        onDelete={onDelete}
+    />
+</Map>
+ : <Spinner/>}
                 {highLevelStatus.highLevelStatus.StateName === "AREA_RECORDING" &&
                     <div style={{position: "absolute", bottom: 30, right: 30, zIndex: 100}}>
                         <Joystick move={handleJoyMove} stop={handleJoyStop}/>

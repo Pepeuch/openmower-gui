@@ -3,15 +3,16 @@ package providers
 import (
 	"context"
 	"encoding/json"
-	"github.com/brutella/hap"
-	"github.com/brutella/hap/accessory"
-	log2 "github.com/brutella/hap/log"
-	"github.com/cedbossneo/openmower-gui/pkg/msgs/mower_msgs"
-	types2 "github.com/cedbossneo/openmower-gui/pkg/types"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/brutella/hap"
+	"github.com/brutella/hap/accessory"
+	log2 "github.com/brutella/hap/log"
+	"github.com/pepeuch/openmower-gui/pkg/msgs/mower_msgs"
+	types2 "github.com/pepeuch/openmower-gui/pkg/types"
 )
 
 type HomeKitProvider struct {

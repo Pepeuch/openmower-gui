@@ -2,17 +2,7 @@ import {App, Button, Col, Modal, Row} from "antd";
 import {useEffect, useMemo, useState} from "react";
 import {fetchEventSource} from "@microsoft/fetch-event-source";
 import {createSchemaField} from "@formily/react";
-import {
-    Checkbox,
-    Form,
-    FormButtonGroup,
-    FormItem,
-    FormLayout,
-    Input,
-    NumberPicker,
-    Select,
-    Submit
-} from "@formily/antd-v5";
+import {Checkbox, Form as FormilyForm, FormButtonGroup, FormItem, FormLayout, Input, NumberPicker, Select, Submit } from "@formily/antd-v5";
 import {StyledTerminal} from "./StyledTerminal.tsx";
 import Terminal, {ColorMode, TerminalOutput} from "react-terminal-ui";
 import {createForm, onFieldValueChange} from "@formily/core";
@@ -170,7 +160,7 @@ export const FlashBoardComponent = (props: { onNext: () => void }) => {
             form.setLoading(false)
         }
     };
-    return <Form form={form}>
+    return <FormilyForm form={form}>
         <Row>
             <Col span={24} style={{height: "55vh", overflowY: "auto"}}>
                 <FormLayout layout="vertical">
@@ -473,5 +463,5 @@ export const FlashBoardComponent = (props: { onNext: () => void }) => {
                     <Button onClick={props.onNext}>Skip</Button>
                 </FormButtonGroup>
             </Col> </Row>
-    </Form>;
+    </FormilyForm>;
 };

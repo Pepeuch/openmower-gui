@@ -123,7 +123,7 @@ export OM_WHEEL_TICKS_PER_M=300.0
 export OM_HEATMAP_SENSOR_IDS=om_gps_accuracy
  */
 import {createSchemaField} from "@formily/react";
-import {Form, FormButtonGroup, FormItem, FormLayout, Input, NumberPicker, Select, Switch} from "@formily/antd-v5";
+import {Form as FormilyForm, FormButtonGroup, FormItem, FormLayout, Input, NumberPicker, Select, Switch} from "@formily/antd-v5";
 import {useApi} from "../hooks/useApi.ts";
 import {App, Card, Col, Row} from "antd";
 import React, {CSSProperties, useEffect, useMemo} from "react";
@@ -259,7 +259,7 @@ export const SettingsComponent: React.FC<{
     }, {} as Record<string, string[]>)
 
     return <Row>
-        <Form form={form} style={{width: '100%'}}>
+        <FormilyForm form={form} style={{width: '100%'}}>
             <Col span={24} style={{height: '80vh', overflowY: 'auto', ...props.contentStyle}}>
                 <FormLayout layout="vertical">
                     {
@@ -350,6 +350,6 @@ export const SettingsComponent: React.FC<{
                     {props.actions && props.actions(form, setSettings, restartOpenMower, restartGui)}
                 </FormButtonGroup.FormItem>
             </Col>
-        </Form>
+        </FormilyForm>
     </Row>
 }
