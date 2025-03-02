@@ -1,8 +1,28 @@
-web/dist
-web/node_modules
-.idea
-.git
-docker-compose.yaml
+# 🗂️ Ignorer les fichiers de build du frontend (inutile dans l’image)
+web/dist/
+web/node_modules/
+
+# 🛠️ Ignorer les fichiers temporaires et d’environnement
+*.iml
+*.log
+*.lock
 .env
+.env.local
+.env.development
+.env.production
+.env.test
 mower_config.sh
-openmower-gui.iml
+
+# 🔥 Ignorer les fichiers de développement
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 🚀 Ignorer les fichiers de gestion du projet
+.git/
+.gitignore
+Dockerfile
+docker-compose.yaml
+Makefile
+README.md

@@ -1,48 +1,64 @@
 #!/bin/bash
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-# Clone the repository https://github.com/ClemensElflein/open_mower_ros in a temporary directory
-OM_DIR=/tmp/open_mower_ros
-DYN_DIR=/tmp/dynamic_reconfigure
-git clone https://github.com/ClemensElflein/open_mower_ros $OM_DIR
-git clone https://github.com/ros/dynamic_reconfigure $DYN_DIR
-cd $OM_DIR && git submodule update --init --recursive
-cd $SCRIPT_DIR
-# Use msg-import to import the messages from the temporary directory
-declare -a PACKAGES_NAME
-declare -a PACKAGES_PATH
 
-PACKAGES_NAME[0]="xbot_msgs"
-PACKAGES_PATH[0]="$OM_DIR/src/lib/xbot_msgs/msg"
-PACKAGES_NAME[1]="mower_msgs"
-PACKAGES_PATH[1]="$OM_DIR/src/mower_msgs/msg"
-PACKAGES_NAME[2]="mower_map"
-PACKAGES_PATH[2]="$OM_DIR/src/mower_map/msg"
+set -e  # Arrête le script en cas d'erreur
+set -o pipefail  # Capture les erreurs dans les pipes
+set -u  # Erreur si une variable non définie est utilisée
 
-PACKAGES_NAME[3]="xbot_msgs"
-PACKAGES_PATH[3]="$OM_DIR/src/lib/xbot_msgs/srv"
-PACKAGES_NAME[4]="mower_msgs"
-PACKAGES_PATH[4]="$OM_DIR/src/mower_msgs/srv"
-PACKAGES_NAME[5]="mower_map"
-PACKAGES_PATH[5]="$OM_DIR/src/mower_map/srv"
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 
-PACKAGES_NAME[6]="dynamic_reconfigure"
-PACKAGES_PATH[6]="$DYN_DIR/srv"
-PACKAGES_NAME[7]="dynamic_reconfigure"
-PACKAGES_PATH[7]="$DYN_DIR/msg"
-for pkg in ${!PACKAGES_NAME[@]}; do
-  mkdir -p pkg/msgs/${PACKAGES_NAME[$pkg]}
-  msgList=$(find ${PACKAGES_PATH[$pkg]} -name '*.msg')
-  for file in $msgList; do
-    echo "Importing message $file"
-    filename=$(basename $file)
-    filename="${filename%.*}"
-    $GOPATH/bin/msg-import --rospackage=${PACKAGES_NAME[$pkg]} --gopackage=${PACKAGES_NAME[$pkg]} $file > pkg/msgs/${PACKAGES_NAME[$pkg]}/${filename}.go
-  done
-  srvList=$(find ${PACKAGES_PATH[$pkg]} -name '*.srv')
-  for file in $srvList; do
-    echo "Importing service $file"
-    filename=$(basename $file)
-    filename="${filename%.*}"
-    $GOPATH/bin/srv-import --rospackage=${PACKAGES_NAME[$pkg]} --gopackage=${PACKAGES_NAME[$pkg]} $file > pkg/msgs/${PACKAGES_NAME[$pkg]}/${filename}.go
-  done
+# Définition des dossiers temporaires
+OM_DIR=$(mktemp -d)  # Crée un dossier temporaire
+DYN_DIR=$(mktemp -d)
+
+echo "📂 Clonage des dépôts dans :"
+echo "   - $OM_DIR"
+echo "   - $DYN_DIR"
+
+# Clone les dépôts
+git clone --depth=1 https://github.com/ClemensElflein/open_mower_ros "$OM_DIR" || { echo "❌ Failed to clone open_mower_ros"; exit 1; }
+git clone --depth=1 https://github.com/ros/dynamic_reconfigure "$DYN_DIR" || { echo "❌ Failed to clone dynamic_reconfigure"; exit 1; }
+
+cd "$OM_DIR" && git submodule update --init --recursive
+cd "$SCRIPT_DIR"
+
+# Vérifie si msg-import et srv-import existent
+if ! command -v msg-import &> /dev/null || ! command -v srv-import &> /dev/null; then
+    echo "❌ The msg-import and srv-import tools are not installed. Install them and add them to your PATH."
+    exit 1
+fi
+
+# Déclaration des packages
+declare -a PACKAGES_NAME=(
+    "xbot_msgs" "mower_msgs" "mower_map"
+    "xbot_msgs" "mower_msgs" "mower_map"
+    "dynamic_reconfigure" "dynamic_reconfigure"
+)
+declare -a PACKAGES_PATH=(
+    "$OM_DIR/src/lib/xbot_msgs/msg" "$OM_DIR/src/mower_msgs/msg" "$OM_DIR/src/mower_map/msg"
+    "$OM_DIR/src/lib/xbot_msgs/srv" "$OM_DIR/src/mower_msgs/srv" "$OM_DIR/src/mower_map/srv"
+    "$DYN_DIR/srv" "$DYN_DIR/msg"
+)
+
+# Boucle sur chaque package
+for pkg in "${!PACKAGES_NAME[@]}"; do
+    mkdir -p "pkg/msgs/${PACKAGES_NAME[$pkg]}"
+    
+    # Traitement des fichiers .msg
+    for file in $(find "${PACKAGES_PATH[$pkg]}" -name '*.msg' 2>/dev/null); do
+        echo "📜 Importation du message : $file"
+        filename=$(basename "$file" .msg)
+        msg-import --rospackage="${PACKAGES_NAME[$pkg]}" --gopackage="${PACKAGES_NAME[$pkg]}" "$file" > "pkg/msgs/${PACKAGES_NAME[$pkg]}/${filename}.go"
+    done
+
+    # Traitement des fichiers .srv
+    for file in $(find "${PACKAGES_PATH[$pkg]}" -name '*.srv' 2>/dev/null); do
+        echo "🔧 Importation du service : $file"
+        filename=$(basename "$file" .srv)
+        srv-import --rospackage="${PACKAGES_NAME[$pkg]}" --gopackage="${PACKAGES_NAME[$pkg]}" "$file" > "pkg/msgs/${PACKAGES_NAME[$pkg]}/${filename}.go"
+    done
 done
+
+# Nettoyage des dossiers temporaires après exécution
+rm -rf "$OM_DIR" "$DYN_DIR"
+
+echo "✅ Generation completed successfully !"

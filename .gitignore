@@ -1,3 +1,37 @@
+# 🛑 Base de données & fichiers de build
 /db
+/dist/
+/bin/
+/pkg/
+
+# 🛑 Node.js & Bun
 /node_modules
+/web/node_modules
+bun.lockb
+.bun
+
+# 🛑 Fichiers de dépendances générés
 package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# 🛑 Vite & TypeScript cache
+/.turbo
+/.esbuild
+/tsconfig.tsbuildinfo
+
+# 🛑 Fichiers Docker temporaires
+docker-compose.override.yml
+*.log
+*.pid
+
+# 🛑 Go build files
+*.exe
+*.out
+*.a
+*.o
+*.test
+
+# 🛑 Système UNIX & Windows
+.DS_Store
+Thumbs.db

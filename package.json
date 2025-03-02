@@ -1,12 +1,16 @@
 {
   "name": "openmower-gui",
-  "module": "index.ts",
   "type": "module",
   "private": true,
+  "main": "./index.js",
   "devDependencies": {
-    "@types/bun": "1.2.3"
-  },
-  "peerDependencies": {
+    "@types/bun": "1.2.3",
     "typescript": "^5"
+  },
+  "scripts": {
+    "build": "bun run build"
+  },
+  "engines": {
+    "bun": ">=1.2.3"
   }
 }

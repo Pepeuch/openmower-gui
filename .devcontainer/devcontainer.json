@@ -1,18 +1,44 @@
-// See https://containers.dev/implementors/json_reference/ for configuration reference
 {
-  "name": "Untitled Node.js project",
+  "name": "OpenMower-GUI DevContainer",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {
+      "VARIANT": "18-bullseye"  // Ex: Choix d'une version spécifique pour Node.js
+    }
   },
   "forwardPorts": [
-    5173,
-    1883,
-    4006
+    5173,  // Vite.js (frontend)
+    1883,  // MQTT
+    4006   // API Backend
   ],
   "remoteUser": "node",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {}
+  },
   "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "golang.go",
+        "ms-vscode.vscode-typescript-next"
+      ]
+    },
     "jetbrains": {
       "backend": "WebStorm"
     }
-  }
+  },
+  "postCreateCommand": "npm install -g bun && bun install --frozen-lockfile",
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ]
 }

@@ -1,27 +1,40 @@
-version: '3'
+version: '3.8'  # Version plus récente pour de meilleures fonctionnalités
 
 services:
   watchtower:
     image: containrrr/watchtower
+    container_name: watchtower
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_POLL_INTERVAL: 86400  # Vérifie les mises à jour chaque jour
+
   gui:
     container_name: openmower-gui
     labels:
-      "com.centurylinklabs.watchtower.enable": true
-      project: openmower
-      app: gui
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "project=openmower"
+      - "app=gui"
     image: ghcr.io/pepeuch/openmower-gui:bun
     restart: unless-stopped
-    network_mode: host
-    privileged: true
+    depends_on:
+      - watchtower
+    network_mode: bridge  # ✅ Meilleure gestion réseau qu'host (évite les conflits)
+    ports:
+      - "8080:8080"  # ✅ Ajout pour éviter de forcer `network_mode: host`
     environment:
       ROS_MASTER_URI: http://localhost:11311
       MOWER_CONFIG_FILE: /config/mower_config.sh
       DOCKER_HOST: unix:///var/run/docker.sock
     volumes:
       - /dev:/dev
-      - ./db:/app/db
+      - openmower-db:/app/db  # ✅ Utilisation d'un volume nommé pour éviter les conflits
       - ./config/om:/config
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./logs:/app/logs  # ✅ Ajout pour persistance des logs
+
+volumes:
+  openmower-db:
+    driver: local  # ✅ Volume persistant pour la base de données

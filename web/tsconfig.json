@@ -15,14 +15,18 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting */
+    /* Linting & Best Practices */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,  // ✅ Améliore la compatibilité avec CommonJS
+    "forceConsistentCasingInFileNames": true,  // ✅ Évite les erreurs liées aux majuscules/minuscules
+    "exactOptionalPropertyTypes": true,  // ✅ Vérifie que les valeurs optionnelles sont bien définies
+    "importsNotUsedAsValues": "remove"  // ✅ Supprime les imports inutilisés du build final
   },
   "include": [
     "src"
   ],
-  "references": [{ "path": "./tsconfig.node.json"}]
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
