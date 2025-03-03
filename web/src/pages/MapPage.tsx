@@ -1,3 +1,4 @@
+//@ts-check
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import {useApi} from "../hooks/useApi.ts";
 import {App, Button, Col, Modal, Row, Slider, Typography} from "antd";
@@ -66,10 +67,10 @@ export const MapPage = () => {
         },
         (e) => {
             const pose = JSON.parse(e) as AbsolutePose
-            const mower_lonlat = transpose(offsetX, offsetY, datum, pose.Pose?.Pose?.Position?.Y!!, pose.Pose?.Pose?.Position?.X!!)
+            const mower_lonlat = transpose(offsetX, offsetY, datum, pose.Pose?.Pose?.Position?.Y!, pose.Pose?.Pose?.Position?.X!)
             setFeatures(oldFeatures => {
-                let orientation = pose.MotionHeading!!;
-                const line = drawLine(offsetX, offsetY, datum, pose.Pose?.Pose?.Position?.Y!!, pose.Pose?.Pose?.Position?.X!!, orientation);
+                let orientation = pose.MotionHeading!;
+                const line = drawLine(offsetX, offsetY, datum, pose.Pose?.Pose?.Position?.Y!, pose.Pose?.Pose?.Position?.X!, orientation);
                 return {
                     ...oldFeatures, mower: {
                         id: "mower",
@@ -297,7 +298,7 @@ export const MapPage = () => {
                     feat
                 }]
             }))
-            const dock_lonlat = transpose(offsetX, offsetY, datum, map?.DockY!!, map?.DockX!!)
+            const dock_lonlat = transpose(offsetX, offsetY, datum, map?.DockY!, map?.DockX!)
             newFeatures["dock"] = {
                 id: "dock",
                 type: "Feature",
@@ -315,7 +316,7 @@ export const MapPage = () => {
                 return f.Type == 4 && f.Action == 0
             }).forEach((marker, index) => {
                 const line: Position[] = marker.Points?.map(point => {
-                    return transpose(offsetX, offsetY, datum, point.Y!!, point.X!!)
+                    return transpose(offsetX, offsetY, datum, point.Y!, point.X!)
                 })
                 const feature: Feature<LineString> = {
                     id: "path-" + index,
@@ -367,7 +368,7 @@ export const MapPage = () => {
                 },                
                 geometry: {
                     coordinates: [area.Area?.Points?.map((point) => {
-                        return transpose(offsetX, offsetY, datum, point.Y!!, point.X!!)
+                        return transpose(offsetX, offsetY, datum, point.Y!, point.X!)
                     })],
                     type: "Polygon"
                 }
@@ -381,7 +382,7 @@ export const MapPage = () => {
                     },                    
                     geometry: {
                         coordinates: [obstacle.Points?.map((point) => {
-                            return transpose(offsetX, offsetY, datum, point.Y!!, point.X!!)
+                            return transpose(offsetX, offsetY, datum, point.Y!, point.X!)
                         })],
                         type: "Polygon"
                     }
@@ -494,7 +495,7 @@ export const MapPage = () => {
         }
         setFeatures(currFeatures => {
             const newFeatures = {...currFeatures};
-            delete newFeatures[currentFeature.id!!]
+            delete newFeatures[currentFeature.id!]
             return newFeatures
         })
         setCurrentFeature(undefined)
@@ -689,18 +690,18 @@ export const MapPage = () => {
                 }
             })
         } else {
-            let quaternionFromHeading = getQuaternionFromHeading(map?.DockHeading!!);
+            let quaternionFromHeading = getQuaternionFromHeading(map?.DockHeading!);
             await guiApi.openmower.mapDockingCreate({
                 dockingPose: {
                     orientation: {
-                        x: quaternionFromHeading.X!!,
-                        y: quaternionFromHeading.Y!!,
-                        z: quaternionFromHeading.Z!!,
-                        w: quaternionFromHeading.W!!,
+                        x: quaternionFromHeading.X!,
+                        y: quaternionFromHeading.Y!,
+                        z: quaternionFromHeading.Z!,
+                        w: quaternionFromHeading.W!,
                     },
                     position: {
-                        x: map?.DockX!!,
-                        y: map?.DockY!!,
+                        x: map?.DockX!,
+                        y: map?.DockY!,
                         z: 0,
                     }
                 }
@@ -931,7 +932,7 @@ export const MapPage = () => {
                         onAsyncClick: (e) => {
                             const item = mowingAreas.find(item => item.key == e.key)                            
                             return mowerAction("start_in_area", {
-                                area: item!!.feat.properties?.index,
+                                area: item!.feat.properties?.index,
                             })()
                         }
                     }}>Mow area</AsyncDropDownButton>

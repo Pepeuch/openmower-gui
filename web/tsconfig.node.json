@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "skipLibCheck": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
+    "composite": true,  // ✅ Permet d'utiliser des références pour un build modulaire
+    "skipLibCheck": true,  // ✅ Ignore la vérification des types des fichiers de bibliothèque
+    "module": "ESNext",  // ✅ On revient à ES2020 pour correspondre à tsconfig.json
+    "moduleResolution": "node",  // ✅ Utilisation de la résolution Node.js pour éviter les erreurs
+    "allowSyntheticDefaultImports": true,  // ✅ Permet les imports par défaut sans export explicite
+    "strict": true,  // ✅ Active les vérifications strictes TypeScript pour éviter les erreurs
+    "esModuleInterop": true,  // ✅ Active pour éviter les erreurs avec les modules CommonJS
+    "forceConsistentCasingInFileNames": true  // ✅ Assure une cohérence stricte sur les noms de fichiers
   },
   "include": [
     "vite.config.ts"

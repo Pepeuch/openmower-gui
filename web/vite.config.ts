@@ -10,26 +10,40 @@ export default defineConfig({
     },
     server: {
         host: '0.0.0.0',
+        port: 5173, // Ajoute un port fixe pour éviter les conflits
+        strictPort: true, // Empêche le changement de port automatique
+        watch: {
+            usePolling: true, // Assure une meilleure compatibilité sur Docker et WSL
+        },
         proxy: {
             '/api': {
                 target: 'http://localhost:4006',
+                changeOrigin: true,
+                secure: false, // Désactive SSL pour éviter les erreurs locales
                 ws: true,
             }
         }
     },
     build: {
+        target: "es2020", // ✅ On revient à ES2020 pour la compatibilité
+        minify: "esbuild", // ✅ Utilise esbuild pour une minification rapide
+        sourcemap: false, // ✅ Désactive les maps pour réduire la taille finale
         rollupOptions: {
             output: {
                 manualChunks(id) {
                     if (id.includes('node_modules')) {
-                        if (id.includes('react')) return 'react';   // Séparer React
-                        if (id.includes('antd')) return 'antd';     // Séparer Ant Design
-                        if (id.includes('mapbox-gl')) return 'mapbox'; // Séparer Mapbox
-                        return 'vendor'; // Met le reste des dépendances dans un fichier séparé
+                        if (id.includes('react')) return 'react';   // ✅ Sépare React
+                        if (id.includes('antd')) return 'antd';     // ✅ Sépare Ant Design
+                        if (id.includes('@vis.gl/react-mapbox')) return 'mapbox'; // ✅ Sépare Mapbox
+                        return 'vendor'; // ✅ Met le reste des dépendances dans un fichier séparé
                     }
                 },
             },
         },
-        chunkSizeWarningLimit: 1000, // Évite les avertissements inutiles
+        chunkSizeWarningLimit: 1500 // ✅ Augmente la limite pour éviter les warnings inutiles
     },
+    optimizeDeps: {
+        include: ["react", "react-dom", "antd"], // ✅ Précharge les modules essentiels
+        exclude: ["@vis.gl/react-mapbox"], // ✅ Évite de précompiler Mapbox pour améliorer la perf
+    }
 });

@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2020",  // ✅ On revient à ES2020
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
 
     /* Bundler mode */
-    "moduleResolution": "node",
+    "moduleResolution": "node",  // ✅ "bundler" posait des problèmes, "node" est plus stable
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -20,13 +19,15 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,  // ✅ Améliore la compatibilité avec CommonJS
-    "forceConsistentCasingInFileNames": true,  // ✅ Évite les erreurs liées aux majuscules/minuscules
-    "exactOptionalPropertyTypes": true,  // ✅ Vérifie que les valeurs optionnelles sont bien définies
-    "importsNotUsedAsValues": "remove"  // ✅ Supprime les imports inutilisés du build final
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "exactOptionalPropertyTypes": true,
+    "importsNotUsedAsValues": "remove",
+
+    /* Type Checking pour ESLint */
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src", "vite.config.ts", "eslint.config.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
