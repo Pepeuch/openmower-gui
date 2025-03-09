@@ -1,12 +1,27 @@
-import {Col, Row, Statistic} from "antd";
-import {useWheelTicks} from "../hooks/useWheelTicks.ts";
+import { useTranslation } from "react-i18next";
 
 export function WheelTicksComponent() {
-    const wheelTicks = useWheelTicks();
-    return <Row gutter={[16, 16]}>
-        <Col lg={8} xs={24}><Statistic title="Rear Left" value={wheelTicks?.WheelTicksRl}/></Col>
-        <Col lg={8} xs={24}><Statistic title="Rear Right" value={wheelTicks?.WheelTicksRr}/></Col>
-        <Col lg={8} xs={24}><Statistic title="Rear Left Direction" value={wheelTicks?.WheelDirectionRl}/></Col>
-        <Col lg={8} xs={24}><Statistic title="Rear Right Direction" value={wheelTicks?.WheelDirectionRr}/></Col>
-    </Row>;
+  const { t } = useTranslation();
+  const wheelTicks = useWheelTicks();
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+      <div className="bg-gray-800 text-white p-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">{t("Rear Left")}</h3>
+        <p className="text-xl">{wheelTicks?.WheelTicksRl}</p>
+      </div>
+      <div className="bg-gray-800 text-white p-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">{t("Rear Right")}</h3>
+        <p className="text-xl">{wheelTicks?.WheelTicksRr}</p>
+      </div>
+      <div className="bg-gray-800 text-white p-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">{t("Rear Left Direction")}</h3>
+        <p className="text-xl">{wheelTicks?.WheelDirectionRl}</p>
+      </div>
+      <div className="bg-gray-800 text-white p-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">{t("Rear Right Direction")}</h3>
+        <p className="text-xl">{wheelTicks?.WheelDirectionRr}</p>
+      </div>
+    </div>
+  );
 }

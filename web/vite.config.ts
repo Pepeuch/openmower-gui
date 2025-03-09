@@ -3,6 +3,14 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
     plugins: [react()],
+    css: {
+        postcss: {
+          plugins: [
+            require('tailwindcss'),
+            require('autoprefixer'),
+          ],
+        },
+      },
     resolve: {
         alias: {
             "react-map-gl": "@vis.gl/react-mapbox", // Corrige l'import de Mapbox

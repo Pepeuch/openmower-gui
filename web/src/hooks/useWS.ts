@@ -1,43 +1,66 @@
 import useWebSocket from "react-use-websocket";
-import {useState} from "react";
+import { useState, useCallback } from "react";
 
-export const useWS = <T>(onError: (e: Error) => void, onInfo: (msg: string) => void, onData: (data: T, first?: boolean) => void) => {
+export const useWS = <T>(
+    onError: (e: Error) => void,
+    onInfo: (msg: string) => void,
+    onData: (data: T, first?: boolean) => void
+) => {
     const [uri, setUri] = useState<string | null>(null);
-    const [first, setFirst] = useState(false)
+    const [first, setFirst] = useState(false);
+
     const ws = useWebSocket(uri, {
         share: true,
         onOpen: () => {
-            console.log(`Opened stream ${uri}`)
-            onInfo("Stream connected")
+            console.debug(`Opened stream: ${uri}`);
+            onInfo("Stream connected");
         },
-        onError: () => {
-            console.log(`Error on stream ${uri}`)
-            onError(new Error(`Stream error`))
+        onError: (event) => {
+            console.error(`Error on stream: ${uri}`, event);
+            onError(new Error("Stream error"));
         },
         onClose: () => {
-            console.log(`Stream closed ${uri}`)
-            onError(new Error(`Stream closed`))
+            console.warn(`Stream closed: ${uri}`);
+            onError(new Error("Stream closed"));
         },
         onMessage: (e) => {
-            if (first) {
-                setFirst(false)
+            console.debug("Received WebSocket message:", e.data);
+        
+            let decodedData;
+            try {
+                decodedData = JSON.parse(e.data);
+            } catch (jsonError) {
+                try {
+                    decodedData = JSON.parse(atob(e.data)); // Essai de décoder en Base64
+                    console.warn("Message WebSocket encodé en Base64, décodage réussi.");
+                } catch (base64Error) {
+                    console.error("Message WebSocket non décodable:", jsonError, base64Error);
+                    onError(new Error("Format de message WebSocket inconnu"));
+                    return;
+                }
             }
-            onData(atob(e.data) as T, first);
-        }
+        
+            if (first) setFirst(false);
+            onData(decodedData, first);
+        },
     });
-    const start = (uri: string) => {
-        setFirst(true)
-        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        if (import.meta.env.DEV) {
-            setUri(`${protocol}://localhost:4006${uri}`)
-        } else {
-            setUri(`${protocol}://${window.location.host}${uri}`)
+
+    const start = useCallback((endpoint: string) => {
+        setFirst(true);
+        const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+        const host = import.meta.env.DEV ? "localhost:4006" : window.location.host;
+        setUri(`${protocol}://${host}${endpoint}`);
+    }, []);
+
+    const stop = useCallback(() => {
+        const socket = ws.getWebSocket();
+        if (socket) {
+            console.debug(`Closing stream: ${socket.url}`);
+            socket.close();
         }
-    };
-    const stop = () => {
-        console.log(`Closing stream ${ws.getWebSocket()?.url}`)
-        setUri(null)
-        setFirst(false)
-    }
-    return {start, stop, sendJsonMessage: ws.sendJsonMessage}
-}
+        setUri(null);
+        setFirst(false);
+    }, [ws]);
+
+    return { start, stop, sendJsonMessage: ws.sendJsonMessage };
+};

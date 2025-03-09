@@ -1,47 +1,66 @@
-import {Col, Row, Statistic} from "antd";
-import {booleanFormatter, booleanFormatterInverted, progressFormatter, stateRenderer} from "./utils.tsx";
-import {useHighLevelStatus} from "../hooks/useHighLevelStatus.ts";
-import {useStatus} from "../hooks/useStatus.ts";
-import {useSettings} from "../hooks/useSettings.ts";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { useHighLevelStatus } from "../hooks/useHighLevelStatus.ts";
+import { useStatus } from "../hooks/useStatus.ts";
+import { useSettings } from "../hooks/useSettings.ts";
+import { booleanFormatter, booleanFormatterInverted, progressFormatter, stateRenderer } from "./utils.tsx";
 
 export function HighLevelStatusComponent() {
-    const {highLevelStatus} = useHighLevelStatus()
-    const status = useStatus()
-    const {settings} = useSettings()
-    const estimateRemainingChargingTime = () => {
-        if (!status.VBattery || !status.ChargeCurrent || status.ChargeCurrent == 0) {
-            return "∞"
-        }
-        let capacity = (settings["OM_BATTERY_CAPACITY_MAH"] ?? "3000.0");
-        let full = (settings["OM_BATTERY_FULL_VOLTAGE"] ?? "28.0");
-        let empty = (settings["OM_BATTERY_EMPTY_VOLTAGE"] ?? "23.0");
-        if (!capacity || !full || !empty) {
-            return "∞"
-        }
-        const estimatedAmpsPerVolt = parseFloat(capacity) / (parseFloat(full) - parseFloat(empty))
-        let estimatedRemainingAmps = (parseFloat(full) - (status.VBattery ?? 0)) * estimatedAmpsPerVolt;
-        if (estimatedRemainingAmps < 10) {
-            return "∞"
-        }
-        let remaining = estimatedRemainingAmps / ((status.ChargeCurrent ?? 0) * 1000)
-        if (remaining < 0) {
-            return "∞"
-        }
-        return Date.now() + remaining * (1000 * 60 * 60)
-    };
-    return <Row gutter={[16, 16]}>
-        <Col lg={6} xs={12}><Statistic title="State" valueStyle={{color: '#3f8600'}}
-                                       value={stateRenderer(highLevelStatus.StateName)}/></Col>
-        <Col lg={6} xs={12}><Statistic title="GPS Quality" precision={2}
-                                       value={(highLevelStatus.GpsQualityPercent ?? 0) * 100}
-                                       suffix={"%"}/></Col>
-        <Col lg={6} xs={12}><Statistic title="Battery" value={(highLevelStatus.BatteryPercent ?? 0) * 100}
-                                       formatter={progressFormatter}/></Col>
-        <Col lg={6} xs={12}><Statistic.Countdown title="Charging time left" format={"HH:mm"}
-                                       value={highLevelStatus.IsCharging ? estimateRemainingChargingTime() : "-"}/></Col>
-        <Col lg={6} xs={12}><Statistic title="Charging" value={highLevelStatus.IsCharging ? "Yes" : "No"}
-                                       formatter={booleanFormatter}/></Col>
-        <Col lg={6} xs={12}><Statistic title="Emergency" value={highLevelStatus.Emergency ? "Yes" : "No"}
-                                       formatter={booleanFormatterInverted}/></Col>
-    </Row>;
+  const { t } = useTranslation();
+  const { highLevelStatus } = useHighLevelStatus();
+  const status = useStatus();
+  const { settings } = useSettings();
+
+  const estimateRemainingChargingTime = () => {
+    if (!status.VBattery || !status.ChargeCurrent || status.ChargeCurrent === 0) {
+      return "∞";
+    }
+    let capacity = parseFloat(settings["OM_BATTERY_CAPACITY_MAH"] ?? "3000.0");
+    let full = parseFloat(settings["OM_BATTERY_FULL_VOLTAGE"] ?? "28.0");
+    let empty = parseFloat(settings["OM_BATTERY_EMPTY_VOLTAGE"] ?? "23.0");
+    if (!capacity || !full || !empty) {
+      return "∞";
+    }
+    const estimatedAmpsPerVolt = capacity / (full - empty);
+    let estimatedRemainingAmps = (full - (status.VBattery ?? 0)) * estimatedAmpsPerVolt;
+    if (estimatedRemainingAmps < 10) {
+      return "∞";
+    }
+    let remaining = estimatedRemainingAmps / ((status.ChargeCurrent ?? 0) * 1000);
+    if (remaining < 0) {
+      return "∞";
+    }
+    return new Date(Date.now() + remaining * (1000 * 60 * 60)).toLocaleTimeString();
+  };
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 text-white">
+      <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">{t("State")}</h3>
+        <p className="text-green-500">{stateRenderer(highLevelStatus.StateName)}</p>
+      </div>
+      <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">{t("GPS Quality")}</h3>
+        <p>{(highLevelStatus.GpsQualityPercent ?? 0) * 100}%</p>
+      </div>
+      <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">{t("Battery")}</h3>
+        <p>{progressFormatter((highLevelStatus.BatteryPercent ?? 0) * 100)}</p>
+      </div>
+      <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">{t("Charging time left")}</h3>
+        <p>{highLevelStatus.IsCharging ? estimateRemainingChargingTime() : "-"}</p>
+      </div>
+      <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">{t("Charging")}</h3>
+        <p>{booleanFormatter(highLevelStatus.IsCharging ? "Yes" : "No")}</p>
+      </div>
+      <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-bold">{t("Emergency")}</h3>
+        <p>{booleanFormatterInverted(highLevelStatus.Emergency ? "Yes" : "No")}</p>
+      </div>
+    </div>
+  );
 }
+
+export default HighLevelStatusComponent;

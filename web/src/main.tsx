@@ -1,57 +1,63 @@
-// eslint-disable-next-line import/order
 import './wdyr';
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import {createHashRouter, RouterProvider,} from "react-router-dom";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { createHashRouter, RouterProvider } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Root from "./routes/root.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
 import LogsPage from "./pages/LogsPage.tsx";
 import OpenMowerPage from "./pages/OpenMowerPage.tsx";
 import MapPage from "./pages/MapPage.tsx";
 import SetupPage from "./pages/SetupPage.tsx";
-import {App, Row} from "antd";
-import {MowerStatus} from "./components/MowerStatus.tsx";
-import {Spinner} from "./components/Spinner.tsx";
+import UiSettings from "./pages/UiSettings.tsx";
+import { MowerStatus } from "./components/MowerStatus.tsx";
+import { Spinner } from "./components/Spinner.tsx";
+import Layout from "./Layout";
+import "./i18n"; // Import de la config i18next
+import "./index.css"; // Import de Tailwind
 
+export default function App() {
+    return (
+      <div className="flex items-center justify-center h-screen bg-blue-500 text-white">
+        <h1 className="text-4xl font-bold">Tailwind fonctionne ! 🎉</h1>
+      </div>
+    );
+  }
+  
 const router = createHashRouter([
     {
         path: "/",
-        element: <Root/>,
+        element: <Root />,
         children: [
-            {
-                element: <SettingsPage/>,
-                path: "/settings",
-            },
-            {
-                element: <LogsPage/>,
-                path: "/logs",
-            },
-            {
-                element: <OpenMowerPage/>,
-                path: "/openmower",
-            },
-            {
-                element: <MapPage/>,
-                path: "/map",
-            },
-            {
-                element: <SetupPage/>,
-                path: "/setup",
-            }
+            { path: "/settings", element: <SettingsPage /> },
+            { path: "/logs", element: <LogsPage /> },
+            { path: "/openmower", element: <OpenMowerPage /> },
+            { path: "/map", element: <MapPage /> },
+            { path: "/setup", element: <SetupPage /> },
+            { path: "/ui-settings", element: <UiSettings /> }
         ]
     },
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-      <App style={{height: "100%"}}>
-          <Row
-              style={{height: '25px', borderBottom: '1px solid #1677ff', position: "absolute", top: 0, right: 0, zIndex: 100, marginLeft: 50, paddingRight: 10, paddingTop: 2}}>
-              <MowerStatus/>
-          </Row>
-          <React.Suspense fallback={<Spinner/>}>
-              <RouterProvider router={router}/>
-          </React.Suspense>
-      </App>
-  </React.StrictMode>,
-)
+function TopBar() {
+    const { t } = useTranslation();
+    return (
+        <div className="absolute top-0 right-0 z-10 flex items-center gap-4 border-b-2 border-blue-500 px-2 py-1 text-white">
+            <MowerStatus />
+            <button onClick={() => window.location.hash = "#/ui-settings"} className="text-white hover:text-gray-300">
+                ⚙️ {t("Open UI Settings")}
+            </button>
+        </div>
+    );
+}
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+    <React.StrictMode>
+        <Layout>
+            <TopBar />
+            <React.Suspense fallback={<Spinner />}>
+                <RouterProvider router={router} />
+            </React.Suspense>
+        </Layout>
+    </React.StrictMode>
+);

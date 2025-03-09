@@ -1,23 +1,31 @@
-import {useHighLevelStatus} from "../hooks/useHighLevelStatus.ts";
-import {Col, Row, Statistic} from "antd";
-import {PoweroffOutlined, WifiOutlined} from "@ant-design/icons"
-import {progressFormatterSmall, stateRenderer} from "./utils.tsx";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { useHighLevelStatus } from "../hooks/useHighLevelStatus.ts";
+import { progressFormatterSmall, stateRenderer } from "./utils.tsx";
 
 export const MowerStatus = () => {
-    const {highLevelStatus} = useHighLevelStatus();
-    return <Row gutter={[16, 16]} style={{margin: 0}}>
-        <Col><Statistic valueStyle={{color: "#3f8600", fontSize: "14px"}}
-                        value={stateRenderer(highLevelStatus.StateName)}/></Col>
-        <Col><Statistic
-            prefix={<WifiOutlined style={{color: (highLevelStatus.GpsQualityPercent ?? 0) > 0 ? "green" : "red"}}
-            />}
-            valueStyle={{fontSize: "14px"}} precision={0}
-            value={(highLevelStatus.GpsQualityPercent ?? 0) * 100}
-            suffix={"%"}/></Col>
-        <Col><Statistic prefix={<PoweroffOutlined style={{color: highLevelStatus.IsCharging ? "green" : undefined}}
-        />}
-                        valueStyle={{fontSize: "14px"}} precision={2}
-                        value={(highLevelStatus.BatteryPercent ?? 0) * 100}
-                        formatter={progressFormatterSmall}/></Col>
-    </Row>;
-}
+  const { t } = useTranslation();
+  const { highLevelStatus } = useHighLevelStatus();
+
+  return (
+    <div className="flex space-x-4 text-sm text-white">
+      <div className="bg-gray-800 p-2 rounded-lg shadow-md">
+        <p className="text-green-500">{stateRenderer(highLevelStatus.StateName)}</p>
+      </div>
+      <div className="bg-gray-800 p-2 rounded-lg shadow-md flex items-center">
+        <span
+          className={`mr-2 ${highLevelStatus.GpsQualityPercent > 0 ? "text-green-500" : "text-red-500"}`}
+        >📡</span>
+        <p>{(highLevelStatus.GpsQualityPercent ?? 0) * 100}%</p>
+      </div>
+      <div className="bg-gray-800 p-2 rounded-lg shadow-md flex items-center">
+        <span
+          className={`mr-2 ${highLevelStatus.IsCharging ? "text-green-500" : "text-gray-400"}`}
+        >🔋</span>
+        <p>{progressFormatterSmall((highLevelStatus.BatteryPercent ?? 0) * 100)}</p>
+      </div>
+    </div>
+  );
+};
+
+export default MowerStatus;

@@ -1,28 +1,32 @@
-import React, { useState } from "react";
-import { Switch } from "antd";
-import type { SwitchProps } from "antd/es/switch";  // ✅ Import correct du type SwitchProps
+import { useTranslation } from "react-i18next";
 
-export const AsyncSwitch: React.FC<SwitchProps & {
-    onAsyncChange?: (checked: boolean, event: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>) => Promise<void>;
-}> = (props) => {
-    const { onAsyncChange, ...rest } = props;
-    const [loading, setLoading] = useState(false);
+export const AsyncSwitch: React.FC<AsyncSwitchProps> = ({ onAsyncChange, className, ...rest }) => {
+  const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
-    // ✅ Correction : Ajout de types explicites
-    const handleChange: (checked: boolean, event: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>) => void = async (checked, event) => {
-        if (props.onChange) {
-            props.onChange(checked, event);
-        } else if (onAsyncChange) {
-            setLoading(true);
-            try {
-                await onAsyncChange(checked, event);
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    if (onAsyncChange) {
+      setLoading(true);
+      try {
+        await onAsyncChange(checked, event);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
-    return <Switch loading={loading} onChange={handleChange} {...rest} />;
+  return (
+    <label className={`relative inline-flex items-center cursor-pointer ${className}`}>
+      <input
+        type="checkbox"
+        className="sr-only peer"
+        onChange={handleChange}
+        disabled={loading}
+        {...rest}
+      />
+      <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-300 transition"></div>
+      <span className="ml-2 text-white">{t(rest.checked ? "Enabled" : "Disabled")}</span>
+    </label>
+  );
 };
-
-export default AsyncSwitch;

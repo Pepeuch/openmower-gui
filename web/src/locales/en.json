@@ -1,0 +1,235 @@
+{
+    "Loading...": "Loading...",
+    "save_changes": "Save Changes",
+    "cancel": "Cancel"
+  }
+  {
+    "Rear Left": "Rear Left",
+    "Rear Right": "Rear Right",
+    "Rear Left Direction": "Rear Left Direction",
+    "Rear Right Direction": "Rear Right Direction",
+    "Loading...": "Loading...",
+    "Save Changes": "Save Changes",
+    "Cancel": "Cancel",
+    "UI Settings": "UI Settings",
+    "Language": "Language",
+    "Enable Developer Mode": "Enable Developer Mode",
+    "Other UI settings will be added here...": "Other UI settings will be added here..."
+  }
+  {
+    "Status": "Status",
+    "Mower status": "Mower status",
+    "On": "On",
+    "Off": "Off",
+    "Raspberry Pi power": "Raspberry Pi power",
+    "GPS power": "GPS power",
+    "ESC power": "ESC power",
+    "Rain detected": "Rain detected",
+    "Yes": "Yes",
+    "No": "No",
+    "Sound module available": "Sound module available",
+    "Sound module busy": "Sound module busy",
+    "UI board available": "UI board available",
+    "Emergency": "Emergency",
+    "Ultrasonic ranges": "Ultrasonic ranges",
+    "Voltage charge": "Voltage charge",
+    "Voltage battery": "Voltage battery",
+    "Charge current": "Charge current",
+    "Left ESC Status": "Left ESC Status",
+    "Right ESC Status": "Right ESC Status",
+    "Mow ESC Status": "Mow ESC Status",
+    "Current": "Current",
+    "Tacho": "Tacho",
+    "RPM": "RPM",
+    "Motor Temperature": "Motor Temperature",
+    "PCB Temperature": "PCB Temperature"
+  }
+  {
+    "Idle": "Idle",
+    "Mowing": "Mowing",
+    "Docking": "Docking",
+    "Undocking": "Undocking",
+    "Area Recording": "Area Recording",
+    "Unknown": "Unknown"
+  }
+  {
+    "GPS Signal": "GPS Signal",
+    "Battery Level": "Battery Level",
+    "Charging": "Charging"
+  }
+  {
+    "Settings": "Settings",
+    "Mower Type": "Mower Type",
+    "Hardware Version": "Hardware Version",
+    "Enable NTRIP": "Enable NTRIP",
+    "Battery Full Voltage": "Battery Full Voltage",
+    "Battery Empty Voltage": "Battery Empty Voltage",
+    "Save Settings": "Save Settings"
+  }
+  {
+    "Enabled": "Enabled",
+    "Disabled": "Disabled"
+  }
+  {
+    "Flash Board": "Flash Board",
+    "Board Type": "Board Type",
+    "Version": "Version",
+    "Repository": "Repository",
+    "Branch": "Branch",
+    "Panel Type": "Panel Type",
+    "Max MPS": "Max MPS",
+    "Disable Emergency": "Disable Emergency",
+    "Flash Firmware": "Flash Firmware",
+    "Skip": "Skip"
+  }
+  {
+    "Flash GPS Configuration": "Flash GPS Configuration",
+    "Click the button below to flash your uBlox Z-F9P GPS Configuration.": "Click the button below to flash your uBlox Z-F9P GPS Configuration.",
+    "GPS flashed successfully": "GPS flashed successfully",
+    "Error flashing GPS": "Error flashing GPS",
+    "Previous": "Previous",
+    "Skip": "Skip"
+  }
+  {
+    "State": "State",
+    "GPS Quality": "GPS Quality",
+    "Battery": "Battery",
+    "Charging time left": "Charging time left",
+    "Charging": "Charging",
+    "Emergency": "Emergency"
+  }
+  {
+    "Angular Velocity X": "Angular Velocity X",
+    "Angular Velocity Y": "Angular Velocity Y",
+    "Angular Velocity Z": "Angular Velocity Z",
+    "Linear Acceleration X": "Linear Acceleration X",
+    "Linear Acceleration Y": "Linear Acceleration Y",
+    "Linear Acceleration Z": "Linear Acceleration Z",
+    "Orientation X": "Orientation X",
+    "Orientation Y": "Orientation Y",
+    "Orientation Z": "Orientation Z"
+  }
+  {
+    "Actions": "Actions",
+    "Start": "Start",
+    "Home": "Home",
+    "Emergency On": "Emergency On",
+    "Emergency Off": "Emergency Off",
+    "More": "More",
+    "Area Recording": "Area Recording",
+    "Mow Next Area": "Mow Next Area"
+  }
+  {
+    "Position X": "Position X",
+    "Position Y": "Position Y",
+    "Altitude": "Altitude",
+    "Orientation": "Orientation",
+    "Accuracy": "Accuracy",
+    "RTK": "RTK",
+    "Fix type": "Fix type",
+    "Dead reckoning": "Dead reckoning",
+    "Yes": "Yes",
+    "No": "No",
+    "FIX": "FIX",
+    "FLOAT": "FLOAT",
+    "Unknown": "Unknown"
+  }
+  {
+    "Terminal Output": "Terminal Output",
+    "No logs available": "No logs available"
+  }
+  {
+    "UI Settings": "UI Settings",
+    "Open UI Settings": "Open UI Settings"
+  }
+  {
+    "Failed to save config": "Failed to save configuration",
+    "Failed to load config": "Failed to load configuration"
+  }
+  {
+    "settings": {
+      "OM_DATUM_LAT": "Latitude of the datum point",
+      "OM_DATUM_LONG": "Longitude of the datum point",
+      "OM_USE_NTRIP": "Use NTRIP to get RTK corrections",
+      "OM_NTRIP_HOSTNAME": "NTRIP server hostname",
+      "OM_NTRIP_PORT": "NTRIP server port",
+      "OM_NTRIP_USER": "NTRIP server username",
+      "OM_NTRIP_PASSWORD": "NTRIP server password",
+      "OM_NTRIP_ENDPOINT": "NTRIP server endpoint",
+      "OM_MOWER_GAMEPAD": "Gamepad type",
+      "OM_GAMEPAD_XBOX": "Xbox 360",
+      "OM_GAMEPAD_PS3": "PS3",
+      "OM_GAMEPAD_STEAM_STICK": "Steam Stick",
+      "OM_GAMEPAD_STEAM_TOUCH": "Steam Touch",
+      "OM_DATUM_LAT_HELP": "This will be your map origin!",
+      "OM_DATUM_LONG_HELP": "This will be your map origin!",
+      "OM_USE_NTRIP_HELP": "Set to False if using external radio plugged into the Ardusimple board."
+    }
+  }
+  {
+    "settings": {
+      "OM_ENABLE_RECORDING_ALL": "Enable recording of all topics",
+      "OM_PERIMETER_SIGNAL": "Enable perimeter signal",
+      "OM_USE_RELATIVE_POSITION": "Use relative position to datum point",
+      "OM_USE_RELATIVE_POSITION_HELP": "If set to true, the mower will use the position relative to the datum point. If set to false, the mower will use the absolute position.",
+      "OM_GPS_PROTOCOL": "GPS protocol",
+      "OM_GPS_BAUDRATE": "GPS baudrate",
+      "OM_GPS_PORT": "GPS port (/dev/gps on mowgli)",
+      "OM_ANTENNA_OFFSET_X": "Antenna offset X",
+      "OM_ANTENNA_OFFSET_Y": "Antenna offset Y",
+      "OM_USE_F9R_SENSOR_FUSION": "Use F9R sensor fusion",
+      "OM_USE_F9R_SENSOR_FUSION_HELP": "If you want to use F9R's sensor fusion, set this to true (you will also need to set DATUM_LAT and DATUM_LONG). If you want to use the GPS position, set this to false.",
+      "OM_DOCKING_DISTANCE": "Distance to dock",
+      "OM_UNDOCK_DISTANCE": "Distance to undock",
+      "OM_DOCKING_EXTRA_TIME": "Extra time (s) to continue docking after detecting voltage",
+      "OM_OUTLINE_COUNT": "Number of points in the outline",
+      "OM_MOWING_ANGLE_OFFSET": "Mowing angle offset",
+      "OM_MOWING_ANGLE_INCREMENT": "Mowing angle increment",
+      "OM_WHEEL_DISTANCE_M": "Distance between wheels in meters",
+      "OM_WHEEL_TICKS_PER_M": "Wheel ticks per meter",
+      "OM_MOWING_ANGLE_OFFSET_IS_ABSOLUTE": "Mowing angle offset is absolute",
+      "OM_TOOL_WIDTH": "Tool width",
+      "OM_TOOL_WIDTH_HELP": "Choose it smaller than your actual mowing tool in order to have some overlap.",
+      "Battery empty voltage": "Battery empty voltage",
+      "OM_BATTERY_FULL_VOLTAGE": "Battery full voltage",
+      "OM_BATTERY_CAPACITY_MAH": "Battery capacity",
+      "OM_MOWING_MOTOR_TEMP_HIGH": "Mowing motor temperature high",
+      "OM_MOWING_MOTOR_TEMP_HIGH_HELP": "If the temperature of the mowing motor is higher than this value, the mower will stop.",
+      "OM_MOWING_MOTOR_TEMP_LOW": "Mowing motor temperature low",
+      "OM_MOWING_MOTOR_TEMP_LOW_HELP": "If the temperature of the mowing motor is lower than this value, the mower will start again.",
+      "OM_GPS_WAIT_TIME_SEC": "GPS wait time",
+      "OM_GPS_TIMEOUT_SEC": "GPS timeout",
+      "OM_ENABLE_MOWER": "Enable mower",
+      "OM_AUTOMATIC_MODE": "Automatic mode",
+      "OM_AUTOMATIC_MODE_MANUAL": "MANUAL - mowing requires manual start",
+      "OM_AUTOMATIC_MODE_SEMIAUTO": "SEMIAUTO - mow the entire map once then wait for manual start again",
+      "OM_AUTOMATIC_MODE_AUTO": "AUTO - mow whenever possible",
+      "OM_MOWING_ANGLE_OFFSET_IS_ABSOLUTE": "Mowing angle offset is absolute",
+      "OM_TOOL_WIDTH": "Choose it smaller than your actual mowing tool in order to have some overlap.",
+      "Tool width": "Tool width",
+      "OM_BATTERY_EMPTY_VOLTAGE": "Voltage for battery to be considered empty",
+      "Voltage for battery to be considered full": "Voltage for battery to be considered full",
+      "'error.featureIdRequired'": "'error.featureIdRequired'",
+      "'error.pointNotSupported'": "'error.pointNotSupported'",
+      {
+        "logs": {
+          "title": "Container logs",
+          "streamClosed": "Logs stream closed",
+          "streamConnected": "Logs stream connected",
+          "fetchError": "Failed to list containers",
+          "start": "Container started",
+          "stop": "Container stopped",
+          "restart": "Container restarted",
+          "startError": "Failed to start container",
+          "stopError": "Failed to stop container",
+          "restartError": "Failed to restart container"
+        }
+      }
+      ,
+
+      
+
+
+    }
+  }
+        

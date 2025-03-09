@@ -1,27 +1,33 @@
-import {useEffect, useState} from "react";
-import {AbsolutePose} from "../types/ros.ts";
-import {useWS} from "./useWS.ts";
+import { useEffect, useState, useCallback } from "react";
+import { AbsolutePose } from "../types/ros.ts";
+import { useWS } from "./useWS.ts";
 
 export const useGPS = () => {
-    const [gps, setGps] = useState<AbsolutePose>({})
-    const gpsStream = useWS<string>(() => {
-            console.log({
-                message: "GPS Stream closed",
+    const [gps, setGps] = useState<AbsolutePose>({});
+    const [isConnected, setIsConnected] = useState(false);
 
-            })
-        }, () => {
-            console.log({
-                message: "GPS Stream connected",
-            })
-        },
-        (e) => {
-            setGps(JSON.parse(e))
-        })
-    useEffect(() => {
-        gpsStream.start("/api/openmower/subscribe/gps",)
-        return () => {
-            gpsStream.stop()
-        }
+    const handleMessage = useCallback((e: string) => {
+        setGps(JSON.parse(e));
     }, []);
-    return gps;
+
+    const gpsStream = useWS<string>(
+        () => {
+            console.debug("GPS Stream closed");
+            setIsConnected(false);
+        },
+        () => {
+            console.debug("GPS Stream connected");
+            setIsConnected(true);
+        },
+        handleMessage
+    );
+
+    useEffect(() => {
+        gpsStream.start("/api/openmower/subscribe/gps");
+        return () => {
+            gpsStream.stop();
+        };
+    }, [gpsStream]);
+
+    return { gps, isConnected };
 };

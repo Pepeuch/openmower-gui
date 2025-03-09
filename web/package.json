@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "generate:api": "swagger-typescript-api -p ../docs/swagger.json -o src/api"
+    "generate:api": "swagger-typescript-api -p ../docs/swagger.json -o src/api",
+    "tailwind": "tailwindcss"
   },
   "sideEffects": false,
   "dependencies": {
@@ -24,6 +25,7 @@
     "@vis.gl/react-mapbox": "^8.0.1",
     "antd": "^5.24.2",
     "axios": "^1.8.1",
+    "i18next": "^24.2.2",
     "localforage": "^1.10.0",
     "mapbox-gl": "^3.4.0",
     "match-sorter": "^8.0.0",
@@ -31,6 +33,7 @@
     "prop-types": "^15.8.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-i18next": "^15.4.1",
     "react-is": "18.3.1",
     "react-joystick-component": "^6.2.1",
     "react-router-dom": "^7.2.0",
@@ -48,12 +51,15 @@
     "@typescript-eslint/parser": "^8.26.0",
     "@vitejs/plugin-react": "^4.3.1",
     "@welldone-software/why-did-you-render": "^8.0.3",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.21.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.1",
+    "postcss": "^8.5.3",
     "swagger-typescript-api": "^13.0.8",
+    "tailwindcss": "^3.4.17",
     "typescript": "^5.5.2",
     "vite": "^6.2.0"
   }

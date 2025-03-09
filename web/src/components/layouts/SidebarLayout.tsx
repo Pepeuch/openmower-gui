@@ -8,6 +8,7 @@ import {
   RocketOutlined,
   SettingOutlined
 } from '@ant-design/icons';
+import { MdOutlineSettings } from "react-icons/md"; // Icône pour UI Settings
 import { useEffect } from "react";
 import i18next from "i18next";
 
@@ -26,6 +27,11 @@ const menuItems = [
     key: '/settings',
     label: i18next.t("menu.settings"),
     icon: <SettingOutlined />
+  },
+  {
+    key: '/ui-settings',  // Nouvelle page des paramètres UI
+    label: i18next.t("menu.uiSettings"),
+    icon: <MdOutlineSettings />
   },
   {
     key: '/map',
